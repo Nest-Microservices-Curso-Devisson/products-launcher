@@ -4,6 +4,26 @@
 3. Ejecutar el comando `git submodule update --init --recursive`
 4. Ejecutar el comando `docker compose up --build` 
 
+NOTA: si para el ambiente de desarrollo el contenedor no queda escuchando cambios con nest por el --watch se puede hacer uso del nodemon
+para hacerlo de manera sencilla podemos hacerlo asi:
+
+1. En cada dockerfile del contenedor realizar la instalacion global ``RUN npm install -g nodemon``
+2. Modificar los package para que el npm start:dev quede asi segun corresponda: 
+
+Para los que no tienen prisma:
+
+`` "start:dev": "nodemon --watch src --exec ts-node -r tsconfig-paths/register src/main.ts", ``
+
+Para los que tienen prisma:
+
+`` "start:dev": "npm run docker-start && nodemon --watch src --exec ts-node -r tsconfig-paths/register src/main.ts", ``
+
+3. Agregar en el docker compose la variable de entorno a cada contenedor: 
+
+`` - CHOKIDAR_USEPOLLING=true `` 
+
+Chokidar es una biblioteca de Node.js que se utiliza para observar cambios en el sistema de archivos. Es una de las dependencias utilizadas por nodemon para reiniciar aplicaciones automáticamente cuando se detectan cambios en los archivos del proyecto.
+
 
 
 ### Pasos para crear los Git Submodules
